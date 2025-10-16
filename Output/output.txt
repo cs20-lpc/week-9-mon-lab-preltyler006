@@ -1,0 +1,15 @@
+=== INT QUEUE TESTS ===
+q (copy view) [len=3]: 10 20 30
+Caught expected (front on empty): front: error, queue is empty, cannot access the front
+Caught expected (back on empty): back: error, queue is empty, cannot access the back
+Caught expected (dequeue on empty): dequeue: error, queue is empty, cannot dequeue
+qCopy (should be 100 200 300 400 500) [len=5]: 100 200 300 400 500
+qAssign (should be 100 200 300 400 500) [len=5]: 100 200 300 400 500
+INT tests passed
+
+=== STRING QUEUE TESTS ===
+s (copy view) [len=3]: alpha beta gamma
+s2 (should be alpha beta gamma) [len=3]: alpha beta gamma
+STRING tests passed
+
+All tests completed successfully
