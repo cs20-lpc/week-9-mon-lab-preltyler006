@@ -1,15 +1,12 @@
 #include "LinkedQueue.hpp"
+
 template <typename T>
-LinkedQueue<T>::LinkedQueue() {
-    this->head = nullptr;
-    this->last = nullptr;
+LinkedQueue<T>::LinkedQueue() : head(nullptr), last(nullptr) {
     this->length = 0;
 }
 
 template <typename T>
-LinkedQueue<T>::LinkedQueue(const LinkedQueue<T>& copyObj) {
-    this->head = nullptr;
-    this->last = nullptr;
+LinkedQueue<T>::LinkedQueue(const LinkedQueue<T>& copyObj) : head(nullptr), last(nullptr) {
     this->length = 0;
     copy(copyObj);
 }
@@ -31,14 +28,9 @@ LinkedQueue<T>::~LinkedQueue() {
 template <typename T>
 T LinkedQueue<T>::back() const {
     if (this->length == 0) {
-        throw string("error: empty list");
-    } else {
-        Node* ptr = this->head;
-        while (ptr->next != nullptr) {
-            ptr = ptr->next;
-        }
-        return ptr->value;
+        throw string("error, queue is empty, cannot access the back");
     }
+    return this->last->value;
 }
 
 template <typename T>
@@ -57,7 +49,6 @@ void LinkedQueue<T>::clear() {
 template <typename T>
 void LinkedQueue<T>::copy(const LinkedQueue<T>& copyObj) {
     this->clear();
-
     Node* curr = copyObj.head;
     while (curr != nullptr) {
         this->enqueue(curr->value);
@@ -68,25 +59,21 @@ void LinkedQueue<T>::copy(const LinkedQueue<T>& copyObj) {
 template <typename T>
 void LinkedQueue<T>::dequeue() {
     if (this->isEmpty()) {
-        throw string("error: empty list");
-    } else {
-        cout << "Removing " << this->head->value << endl;
-        Node* temp = this->head;
-        this->head = this->head->next;
-        delete temp;
-        this->length--;
-        if (this->isEmpty()) {
-            this->last = nullptr;
-        }
+        throw string("error, queue is empty, cannot dequeue");
     }
-    
+    Node* temp = this->head;
+    this->head = this->head->next;
+    delete temp;
+    this->length--;
+    if (this->isEmpty()) {
+        this->last = nullptr;
+    }
 }
 
 template <typename T>
 void LinkedQueue<T>::enqueue(const T& elem) {
     Node* newNode = new Node(elem);
     newNode->next = nullptr;
-
     if (this->isEmpty()) {
         this->head = newNode;
         this->last = newNode;
@@ -99,8 +86,8 @@ void LinkedQueue<T>::enqueue(const T& elem) {
 
 template <typename T>
 T LinkedQueue<T>::front() const {
-    if (this->head == nullptr) {
-        throw string("error: empty queue");
+    if (this->length == 0) {
+        throw string("error, queue is empty, cannot access the front");
     }
     return this->head->value;
 }
