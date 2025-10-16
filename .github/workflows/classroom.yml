@@ -1,0 +1,57 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Generate main.cpp
+      id: generate-main-cpp
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Generate main.cpp
+        setup-command: ''
+        command: bash ./generate_main.sh
+        timeout: 10
+    - name: Compile
+      id: compile
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Compile
+        setup-command: ''
+        command: g++ --std=c++17 main.cpp -o main
+        timeout: 10
+        max-score: 10
+    - name: Run
+      id: run
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Run
+        setup-command: ''
+        command: "./main"
+        input: ''
+        expected-output: 'front: error, queue is empty, cannot access the front back:
+          error, queue is empty, cannot access the back A length: 1 A front: -5 A
+          back: -5 A length: 0 front: error, queue is empty, cannot access the front
+          back: error, queue is empty, cannot access the back A length: 10 A front:
+          0 A back: 9 A contains: 0 1 2 3 4 5 6 7 8 9  A is now empty B length: 10
+          B front: 0 B back: 9 B is now empty C length: 10 C front: 0 C back: 9'
+        comparison-method: contains
+        timeout: 10
+        max-score: 5
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        GENERATE-MAIN-CPP_RESULTS: "${{steps.generate-main-cpp.outputs.result}}"
+        COMPILE_RESULTS: "${{steps.compile.outputs.result}}"
+        RUN_RESULTS: "${{steps.run.outputs.result}}"
+      with:
+        runners: generate-main-cpp,compile,run
